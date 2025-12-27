@@ -120,3 +120,100 @@ footer {
     border-top: 1px solid #e5e7eb;
     margin-top: 2rem;
 }
+/* 返回按钮 */
+.back-button {
+    display: inline-block;
+    margin-top: 1rem;
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s;
+}
+
+.back-button:hover {
+    color: var(--secondary);
+    text-decoration: underline;
+}
+
+/* 文章详情页容器 */
+.post-detail-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* 文章详情样式 */
+.post-detail {
+    background: white;
+    border-radius: 12px;
+    padding: 2.5rem;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
+    margin-bottom: 3rem;
+}
+
+.post-header {
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 2px solid #e5e7eb;
+}
+
+.post-header h1 {
+    font-size: 2.2rem;
+    color: var(--dark);
+    margin-bottom: 1rem;
+    line-height: 1.3;
+}
+
+.post-meta {
+    color: #6b7280;
+    font-size: 0.95rem;
+}
+
+.post-meta span {
+    margin-right: 1.5rem;
+}
+
+.post-content {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: #374151;
+}
+
+.post-content p {
+    margin-bottom: 1.5rem;
+}
+
+.post-footer {
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #e5e7eb;
+}
+
+.error-message {
+    text-align: center;
+    padding: 3rem;
+    background-color: #fef2f2;
+    border-radius: 8px;
+    color: #dc2626;
+}
+
+.loading {
+    text-align: center;
+    padding: 3rem;
+    color: #6b7280;
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+    .post-detail {
+        padding: 1.5rem;
+    }
+    
+    .post-header h1 {
+        font-size: 1.8rem;
+    }
+    
+    .post-content {
+        font-size: 1rem;
+    }
+}
