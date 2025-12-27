@@ -9,18 +9,20 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
         const posts = await response.json();
         
-        // 渲染文章列表，添加点击跳转
+        // ... 之前的代码保持不变 ...
+
+        // 在获取文章数据后，修改渲染部分：
         postsContainer.innerHTML = posts.map(post => `
             <article class="post-card" data-post-id="${post.id}">
                 <div class="post-content">
                     <h3><a href="/post.html?id=${post.id}" class="post-link">${post.title}</a></h3>
-                    <p>${post.content.substring(0, 120)}...</p>
+                    <p>${post.excerpt || post.content.substring(0, 120)}...</p>
                     <div class="post-meta">
                         <span>发布于 ${new Date(post.created_at).toLocaleDateString('zh-CN')}</span>
-                        <span>${post.tags.length} 个标签</span>
+                        <span>阅读: ${post.view_count || 0}</span>
                     </div>
                     <div class="tag-list">
-                        ${post.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+                        ${(post.tags || []).map(tag => `<span class="tag">${tag.name}</span>`).join('')}
                     </div>
                 </div>
             </article>
@@ -68,3 +70,5 @@ style.textContent = `
     }
 `;
 document.head.appendChild(style);
+
+
