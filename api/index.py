@@ -7,12 +7,13 @@ import os
 
 app = FastAPI()
 
-# 解决跨域问题
+# 解决跨域问题（生产环境建议指定具体域名，而非["*"]）
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["\*"],
-    allow_methods=["\*"],
-    allow_headers=["\*"],
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 # 数据模型
@@ -23,7 +24,7 @@ class BlogPost(BaseModel):
     created_at: datetime
     tags: list[str] = []
 
-# 模拟数据库（实际项目可替换为真实数据库）
+# 模拟数据库
 BLOG_POSTS = [
     BlogPost(
         id=1,
@@ -54,5 +55,6 @@ async def get_post(post_id: int):
             return post.dict()
     raise HTTPException(status_code=404, detail="文章未找到")
 
-# Vercel要求导出app实例
-handler = app
+# 关键修改：确保Vercel直接使用 `app` 实例
+# 删除或注释掉下面这行
+# handler = app
