@@ -278,55 +278,55 @@ async def health_check():
         logger.error(f"数据库连接检查失败: {e}")
         return {"status": "unhealthy", "database": "disconnected", "error": str(e)}
 
-# 测试数据插入端点（仅用于开发环境）
-@app.post("/api/dev/seed")
-async def seed_test_data():
-    """插入测试数据（仅开发环境使用）"""
-    # 在实际生产环境中应该移除或保护此端点
-    try:
-        async with (await get_db_connection()).acquire() as conn:
-            async with conn.cursor() as cursor:
-                # 清空现有数据
-                await cursor.execute("DELETE FROM post_tags")
-                await cursor.execute("DELETE FROM tags")
-                await cursor.execute("DELETE FROM blog_posts")
+# # 测试数据插入端点（仅用于开发环境）
+# @app.post("/api/dev/seed")
+# async def seed_test_data():
+#     """插入测试数据（仅开发环境使用）"""
+#     # 在实际生产环境中应该移除或保护此端点
+#     try:
+#         async with (await get_db_connection()).acquire() as conn:
+#             async with conn.cursor() as cursor:
+#                 # 清空现有数据
+#                 await cursor.execute("DELETE FROM post_tags")
+#                 await cursor.execute("DELETE FROM tags")
+#                 await cursor.execute("DELETE FROM blog_posts")
                 
-                # 插入测试标签
-                await cursor.execute("""
-                    INSERT INTO tags (name, slug) VALUES
-                    ('Python', 'python'),
-                    ('编程', 'programming'),
-                    ('部署', 'deployment'),
-                    ('云服务', 'cloud-service')
-                """)
+#                 # 插入测试标签
+#                 await cursor.execute("""
+#                     INSERT INTO tags (name, slug) VALUES
+#                     ('Python', 'python'),
+#                     ('编程', 'programming'),
+#                     ('部署', 'deployment'),
+#                     ('云服务', 'cloud-service')
+#                 """)
                 
-                # 插入测试文章
-                await cursor.execute("""
-                    INSERT INTO blog_posts (title, content, excerpt) VALUES
-                    (%s, %s, %s),
-                    (%s, %s, %s)
-                """, (
-                    "我的第一篇博客",
-                    "这是我的个人博客首篇文章，主要分享Python开发经验...\n\nPython是一种广泛使用的高级编程语言。",
-                    "分享Python开发经验",
-                    "Vercel部署指南",
-                    "详细讲解如何将Python应用部署到Vercel平台...\n\nVercel是一个现代的云平台。",
-                    "Python应用部署指南"
-                ))
+#                 # 插入测试文章
+#                 await cursor.execute("""
+#                     INSERT INTO blog_posts (title, content, excerpt) VALUES
+#                     (%s, %s, %s),
+#                     (%s, %s, %s)
+#                 """, (
+#                     "我的第一篇博客",
+#                     "这是我的个人博客首篇文章，主要分享Python开发经验...\n\nPython是一种广泛使用的高级编程语言。",
+#                     "分享Python开发经验",
+#                     "Vercel部署指南",
+#                     "详细讲解如何将Python应用部署到Vercel平台...\n\nVercel是一个现代的云平台。",
+#                     "Python应用部署指南"
+#                 ))
                 
-                # 建立文章-标签关联
-                await cursor.execute("""
-                    INSERT INTO post_tags (post_id, tag_id) VALUES
-                    (1, 1), (1, 2),
-                    (2, 1), (2, 3), (2, 4)
-                """)
+#                 # 建立文章-标签关联
+#                 await cursor.execute("""
+#                     INSERT INTO post_tags (post_id, tag_id) VALUES
+#                     (1, 1), (1, 2),
+#                     (2, 1), (2, 3), (2, 4)
+#                 """)
                 
-                await conn.commit()
+#                 await conn.commit()
                 
-        return {"message": "测试数据插入成功", "post_count": 2, "tag_count": 4}
-    except Exception as e:
-        logger.error(f"插入测试数据失败: {e}")
-        raise HTTPException(status_code=500, detail=f"插入测试数据失败: {e}")
+#         return {"message": "测试数据插入成功", "post_count": 2, "tag_count": 4}
+#     except Exception as e:
+#         logger.error(f"插入测试数据失败: {e}")
+#         raise HTTPException(status_code=500, detail=f"插入测试数据失败: {e}")
 
 # 根路径
 @app.get("/")
