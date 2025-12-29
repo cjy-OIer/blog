@@ -356,24 +356,24 @@ async def health_check():
         logger.error(f"数据库连接检查失败: {e}")
         return {"status": "unhealthy", "database": "disconnected", "error": str(e)}
 
-@app.post("/api/seed")
-async def create_post(
-    post: BlogPostCreate, 
-    username: str = Depends(authenticate)
-):
-    """创建新博客文章（需要管理员认证）"""
-    try:
-        post_id = await create_blog_post(post)
-        return {
-            "status": "success", 
-            "message": "博客发布成功", 
-            "post_id": post_id
-        }
-    except HTTPException:
-        raise
-    except Exception as e:
-        logger.error(f"发布文章异常: {e}")
-        raise HTTPException(status_code=500, detail="服务器内部错误")
+# @app.post("/api/seed")
+# async def create_post(
+#     post: BlogPostCreate, 
+#     username: str = Depends(authenticate)
+# ):
+#     """创建新博客文章（需要管理员认证）"""
+#     try:
+#         post_id = await create_blog_post(post)
+#         return {
+#             "status": "success", 
+#             "message": "博客发布成功", 
+#             "post_id": post_id
+#         }
+#     except HTTPException:
+#         raise
+#     except Exception as e:
+#         logger.error(f"发布文章异常: {e}")
+#         raise HTTPException(status_code=500, detail="服务器内部错误")
 
 # # 测试数据插入端点（仅用于开发环境）
 # @app.post("/api/dev/seed")
