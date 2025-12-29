@@ -7,6 +7,9 @@ import aiomysql
 import os
 from dotenv import load_dotenv
 import logging
+from fastapi.security import HTTPBasic, HTTPBasicCredentials
+import secrets
+
 
 # 加载环境变量
 load_dotenv()
@@ -25,6 +28,17 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+# 添加HTTP Basic认证
+security = HTTPBasic()
+
+# 博客发布请求模型
+class BlogPostCreate(BaseModel):
+    title: str
+    content: str
+    excerpt: Optional[str] = None
+    cover_image: Optional[str] = None
+    status: str = "published"
+    tag_names: List[str] = []  # 标签名称列表
 
 # 数据模型
 class Tag(BaseModel):
@@ -60,6 +74,20 @@ DB_CONFIG = {
     "autocommit": True,
     "charset": "utf8mb4"
 }
+
+# 认证依赖函数
+async def authenticate(credentials: HTTPBasicCredentials = Depends(security)):
+    correct_username = os.getenv("ADMIN_USER", "admin")
+    correct_password = os.getenv("ADMIN_PASSWORD", "password")
+    
+    if not (secrets.compare_digest(credentials.username, correct_username) and 
+            secrets.compare_digest(credentials.password, correct_password)):
+        raise HTTPException(
+            status_code=401,
+            detail="认证失败",
+            headers={"WWW-Authenticate": "Basic"},
+        )
+    return credentials.username
 
 async def get_db_connection():
     """获取数据库连接"""
@@ -220,6 +248,56 @@ async def search_posts(keyword: str = None, tag: str = None):
             await cursor.execute(query, params)
             return await cursor.fetchall()
 
+async def create_blog_post(post_data: BlogPostCreate):
+    """创建新博客文章"""
+    async with (await get_db_connection()).acquire() as conn:
+        async with conn.cursor() as cursor:
+            try:
+                # 插入博客文章
+                await cursor.execute(
+                    """INSERT INTO blog_posts 
+                    (title, content, excerpt, cover_image, status) 
+                    VALUES (%s, %s, %s, %s, %s)""",
+                    (post_data.title, post_data.content, post_data.excerpt, 
+                     post_data.cover_image, post_data.status)
+                )
+                
+                post_id = cursor.lastrowid
+                
+                # 处理标签
+                if post_data.tag_names:
+                    for tag_name in post_data.tag_names:
+                        # 检查标签是否存在
+                        await cursor.execute(
+                            "SELECT id FROM tags WHERE name = %s", (tag_name,)
+                        )
+                        tag_result = await cursor.fetchone()
+                        
+                        if tag_result:
+                            tag_id = tag_result
+                        else:
+                            # 创建新标签
+                            slug = tag_name.lower().replace(' ', '-')
+                            await cursor.execute(
+                                "INSERT INTO tags (name, slug) VALUES (%s, %s)",
+                                (tag_name, slug)
+                            )
+                            tag_id = cursor.lastrowid
+                        
+                        # 建立文章-标签关联
+                        await cursor.execute(
+                            "INSERT INTO post_tags (post_id, tag_id) VALUES (%s, %s)",
+                            (post_id, tag_id)
+                        )
+                
+                await conn.commit()
+                return post_id
+                
+            except Exception as e:
+                await conn.rollback()
+                logger.error(f"创建博客文章失败: {e}")
+                raise HTTPException(status_code=500, detail="创建文章失败")
+
 # API路由
 @app.get("/api/posts")
 async def get_posts(include_draft: bool = False):
@@ -277,6 +355,25 @@ async def health_check():
     except Exception as e:
         logger.error(f"数据库连接检查失败: {e}")
         return {"status": "unhealthy", "database": "disconnected", "error": str(e)}
+
+@app.post("/api/seed")
+async def create_post(
+    post: BlogPostCreate, 
+    username: str = Depends(authenticate)
+):
+    """创建新博客文章（需要管理员认证）"""
+    try:
+        post_id = await create_blog_post(post)
+        return {
+            "status": "success", 
+            "message": "博客发布成功", 
+            "post_id": post_id
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"发布文章异常: {e}")
+        raise HTTPException(status_code=500, detail="服务器内部错误")
 
 # # 测试数据插入端点（仅用于开发环境）
 # @app.post("/api/dev/seed")
