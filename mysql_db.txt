@@ -1,7 +1,2 @@
-数据库名称	hyacine
-数据库用户	hyacine
-数据库密码	To3gM5etInLYlIMI
-数据库地址端口	mysql2.sqlpub.com:3307
-注册邮箱	cjy114514@outlook.com
 网站 sqlpub.com
 网站密码 0drVPTDnaCXWerrN
