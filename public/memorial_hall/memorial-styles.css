@@ -1,0 +1,667 @@
+/* 灵堂页面主样式 */
+.memorial-body {
+    background: 
+        radial-gradient(ellipse at center, 
+            rgba(20, 10, 30, 0.95) 0%, 
+            rgba(10, 5, 20, 0.98) 70%,
+            #050510 100%),
+        url('https://images.unsplash.com/photo-1519681393784-d120267933ba?ixlib=rb-4.0.3&auto=format&fit=crop&w=1950&q=80');
+    background-size: cover;
+    background-attachment: fixed;
+    background-position: center;
+    color: #e8e6e3;
+    min-height: 100vh;
+    font-family: 'SimSun', 'STSong', 'NSimSun', serif;
+    position: relative;
+    overflow-x: hidden;
+}
+
+.memorial-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+        radial-gradient(circle at 20% 50%, 
+            rgba(139, 0, 0, 0.1) 0%, 
+            transparent 50%),
+        radial-gradient(circle at 80% 20%, 
+            rgba(0, 0, 139, 0.1) 0%, 
+            transparent 50%);
+    z-index: -1;
+}
+
+/* 头部样式 */
+.memorial-header {
+    background: rgba(20, 20, 30, 0.7);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(139, 0, 0, 0.3);
+    padding: 1rem 2rem;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.memorial-nav {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.back-home {
+    color: #b0a8a8;
+    text-decoration: none;
+    font-size: 0.9rem;
+    padding: 0.5rem 1rem;
+    border: 1px solid rgba(139, 0, 0, 0.3);
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+
+.back-home:hover {
+    color: #fff;
+    border-color: rgba(139, 0, 0, 0.6);
+    background: rgba(139, 0, 0, 0.1);
+}
+
+.memorial-title h1 {
+    font-size: 2rem;
+    color: #e8e6e3;
+    text-align: center;
+    margin: 0;
+    text-shadow: 0 0 10px rgba(139, 0, 0, 0.5);
+    letter-spacing: 2px;
+}
+
+.subtitle {
+    color: #b0a8a8;
+    font-size: 0.8rem;
+    text-align: center;
+    margin-top: 0.2rem;
+    letter-spacing: 1px;
+}
+
+/* 主内容区 */
+.memorial-main {
+    max-width: 1000px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+/* 纪念引言 */
+.memorial-intro {
+    margin-bottom: 3rem;
+}
+
+.memorial-frame {
+    background: rgba(30, 25, 40, 0.6);
+    border: 1px solid rgba(139, 0, 0, 0.3);
+    border-radius: 8px;
+    padding: 2rem;
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+}
+
+.incense-stick {
+    width: 4px;
+    height: 100px;
+    background: linear-gradient(to bottom, #8B4513, #D2691E, #F4A460);
+    position: relative;
+}
+
+.incense-stick::before {
+    content: '';
+    position: absolute;
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 20px;
+    height: 20px;
+    background: rgba(255, 140, 0, 0.2);
+    border-radius: 50%;
+    animation: incense-smoke 3s infinite ease-in-out;
+}
+
+@keyframes incense-smoke {
+    0%, 100% { 
+        opacity: 0.2;
+        transform: translateX(-50%) translateY(0);
+    }
+    50% { 
+        opacity: 0.4;
+        transform: translateX(-50%) translateY(-10px);
+    }
+}
+
+.memorial-content {
+    flex: 1;
+    text-align: center;
+}
+
+.memorial-content h2 {
+    color: #e8d3b9;
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid rgba(139, 0, 0, 0.3);
+    padding-bottom: 0.5rem;
+}
+
+.memorial-text {
+    color: #c0b8a8;
+    line-height: 1.8;
+    font-size: 1.1rem;
+    margin-bottom: 1.5rem;
+}
+
+.memorial-quote {
+    background: rgba(40, 35, 50, 0.5);
+    padding: 1rem;
+    border-left: 4px solid rgba(139, 0, 0, 0.5);
+    margin-top: 1rem;
+}
+
+.memorial-quote p {
+    font-style: italic;
+    color: #e8d3b9;
+    margin: 0;
+}
+
+.quote-author {
+    display: block;
+    text-align: right;
+    color: #b0a8a8;
+    font-size: 0.9rem;
+    margin-top: 0.5rem;
+}
+
+/* 灵台样式 */
+.memorial-altar {
+    margin: 3rem 0;
+}
+
+.altar-table {
+    background: linear-gradient(to bottom, 
+        rgba(50, 40, 30, 0.9) 0%,
+        rgba(30, 20, 15, 0.95) 100%);
+    border: 2px solid #8B4513;
+    border-radius: 8px;
+    padding: 2rem;
+    box-shadow: 
+        0 0 30px rgba(139, 0, 0, 0.3),
+        inset 0 0 20px rgba(0, 0, 0, 0.5);
+}
+
+.altar-top {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 2rem;
+}
+
+.memorial-tablet {
+    background: rgba(20, 15, 10, 0.9);
+    border: 2px solid #D2691E;
+    border-radius: 4px;
+    padding: 2rem;
+    width: 300px;
+    text-align: center;
+    position: relative;
+}
+
+.memorial-tablet::before {
+    content: '';
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 50px;
+    height: 10px;
+    background: #8B4513;
+    border-radius: 2px;
+}
+
+.tablet-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    color: #D2691E;
+}
+
+.tablet-content h4 {
+    color: #e8d3b9;
+    font-size: 1.5rem;
+    margin: 1rem 0;
+}
+
+.memorial-date {
+    color: #b0a8a8;
+    font-size: 0.9rem;
+    margin: 0.5rem 0;
+}
+
+.memorial-message {
+    color: #c0b8a8;
+    font-style: italic;
+    margin: 1rem 0;
+    padding: 0.5rem;
+    border-top: 1px solid rgba(139, 0, 0, 0.3);
+    border-bottom: 1px solid rgba(139, 0, 0, 0.3);
+}
+
+.tablet-footer {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(139, 0, 0, 0.2);
+}
+
+.offering {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: #b0a8a8;
+    font-size: 0.8rem;
+}
+
+.offering i {
+    font-size: 1.2rem;
+    margin-bottom: 0.3rem;
+    color: #D2691E;
+}
+
+/* 供品 */
+.offerings {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.offering-item {
+    background: rgba(40, 30, 20, 0.7);
+    border: 1px solid rgba(139, 0, 0, 0.2);
+    border-radius: 8px;
+    padding: 1rem;
+    text-align: center;
+    width: 120px;
+    transition: transform 0.3s ease;
+}
+
+.offering-item:hover {
+    transform: translateY(-5px);
+    border-color: rgba(139, 0, 0, 0.4);
+}
+
+.offering-icon {
+    font-size: 2rem;
+    color: #D2691E;
+    margin-bottom: 0.5rem;
+}
+
+.offering-item p {
+    color: #b0a8a8;
+    margin: 0;
+    font-size: 0.9rem;
+}
+
+/* 留言区 */
+.memorial-messages {
+    margin: 3rem 0;
+}
+
+.memorial-messages h2 {
+    color: #e8d3b9;
+    text-align: center;
+    margin-bottom: 2rem;
+    border-bottom: 1px solid rgba(139, 0, 0, 0.3);
+    padding-bottom: 0.5rem;
+}
+
+.messages-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.message-card {
+    background: rgba(40, 35, 50, 0.6);
+    border: 1px solid rgba(139, 0, 0, 0.2);
+    border-radius: 6px;
+    padding: 1.2rem;
+    transition: all 0.3s ease;
+}
+
+.message-card:hover {
+    border-color: rgba(139, 0, 0, 0.4);
+    transform: translateY(-3px);
+}
+
+.message-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid rgba(139, 0, 0, 0.1);
+}
+
+.message-header i {
+    font-size: 2rem;
+    color: #b0a8a8;
+}
+
+.message-header h4 {
+    color: #e8d3b9;
+    margin: 0;
+}
+
+.message-date {
+    color: #8a7f7f;
+    font-size: 0.8rem;
+}
+
+.message-content {
+    color: #c0b8a8;
+    line-height: 1.6;
+    margin: 0;
+    font-style: italic;
+}
+
+/* 留言表单 */
+.add-message-form {
+    background: rgba(30, 25, 40, 0.7);
+    border: 1px solid rgba(139, 0, 0, 0.3);
+    border-radius: 8px;
+    padding: 2rem;
+    margin-top: 2rem;
+}
+
+.add-message-form h3 {
+    color: #e8d3b9;
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    padding: 0.8rem;
+    background: rgba(20, 15, 30, 0.8);
+    border: 1px solid rgba(139, 0, 0, 0.3);
+    border-radius: 4px;
+    color: #e8e6e3;
+    font-family: inherit;
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.submit-btn {
+    background: linear-gradient(to right, 
+        rgba(139, 0, 0, 0.7), 
+        rgba(100, 0, 0, 0.7));
+    color: white;
+    border: none;
+    padding: 0.8rem 2rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+    display: block;
+    margin: 0 auto;
+    transition: all 0.3s ease;
+}
+
+.submit-btn:hover {
+    background: linear-gradient(to right, 
+        rgba(160, 0, 0, 0.8), 
+        rgba(120, 0, 0, 0.8));
+    transform: translateY(-2px);
+}
+
+/* 纪念诗文 */
+.memorial-poems {
+    margin: 3rem 0;
+}
+
+.memorial-poems h2 {
+    color: #e8d3b9;
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.poems-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 2rem;
+}
+
+.poem-card {
+    background: rgba(40, 35, 50, 0.6);
+    border: 1px solid rgba(139, 0, 0, 0.2);
+    border-radius: 8px;
+    padding: 1.5rem;
+    text-align: center;
+}
+
+.poem-card h4 {
+    color: #e8d3b9;
+    margin-bottom: 0.5rem;
+}
+
+.poem-author {
+    color: #b0a8a8;
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+    font-style: italic;
+}
+
+.poem-content {
+    color: #c0b8a8;
+    line-height: 1.8;
+    font-size: 1rem;
+}
+
+/* 页脚 */
+.memorial-footer {
+    background: rgba(20, 20, 30, 0.8);
+    border-top: 1px solid rgba(139, 0, 0, 0.3);
+    padding: 2rem;
+    margin-top: 3rem;
+}
+
+.memorial-info {
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.memorial-info p {
+    color: #b0a8a8;
+    margin: 0.5rem 0;
+}
+
+.footer-note {
+    color: #e8d3b9;
+    font-style: italic;
+    margin-top: 1rem;
+}
+
+.memorial-actions {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin: 1.5rem 0;
+    flex-wrap: wrap;
+}
+
+.pray-btn {
+    background: rgba(40, 30, 40, 0.7);
+    border: 1px solid rgba(139, 0, 0, 0.3);
+    color: #e8d3b9;
+    padding: 0.8rem 1.5rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.pray-btn:hover {
+    background: rgba(139, 0, 0, 0.2);
+    border-color: rgba(139, 0, 0, 0.5);
+    transform: translateY(-2px);
+}
+
+.copyright {
+    text-align: center;
+    color: #8a7f7f;
+    font-size: 0.8rem;
+    margin-top: 1rem;
+}
+
+/* 音乐播放器 */
+.music-player {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: rgba(30, 25, 40, 0.9);
+    border: 1px solid rgba(139, 0, 0, 0.3);
+    border-radius: 8px;
+    padding: 0.5rem 1rem;
+    z-index: 1000;
+}
+
+.music-controls {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.music-controls button {
+    background: none;
+    border: 1px solid rgba(139, 0, 0, 0.3);
+    color: #e8d3b9;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.music-title {
+    color: #b0a8a8;
+    font-size: 0.9rem;
+}
+
+/* 蜡烛效果 */
+.candles-container {
+    position: fixed;
+    top: 20%;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: space-around;
+    pointer-events: none;
+    z-index: -1;
+}
+
+.candle {
+    width: 30px;
+    height: 120px;
+    background: linear-gradient(to bottom, 
+        #8B4513 0%, 
+        #D2691E 30%,
+        #F4A460 100%);
+    position: relative;
+    border-radius: 15px;
+}
+
+.flame {
+    position: absolute;
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 20px;
+    height: 40px;
+    background: linear-gradient(to bottom, 
+        #FFD700 0%,
+        #FF8C00 50%,
+        #FF4500 100%);
+    border-radius: 50% 50% 20% 20%;
+    animation: flame-flicker 2s infinite ease-in-out;
+    filter: blur(1px);
+}
+
+@keyframes flame-flicker {
+    0%, 100% { 
+        transform: translateX(-50%) scale(1); 
+        opacity: 0.9;
+    }
+    50% { 
+        transform: translateX(-50%) scale(1.1); 
+        opacity: 1;
+    }
+}
+
+.virtual-candles {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+    z-index: 999;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .memorial-frame {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .incense-stick {
+        display: none;
+    }
+    
+    .memorial-title h1 {
+        font-size: 1.5rem;
+    }
+    
+    .memorial-content h2 {
+        font-size: 1.4rem;
+    }
+    
+    .poems-container,
+    .messages-container {
+        grid-template-columns: 1fr;
+    }
+    
+    .memorial-actions {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .pray-btn {
+        width: 200px;
+        justify-content: center;
+    }
+}

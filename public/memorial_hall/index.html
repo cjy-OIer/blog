@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>纪念堂 - 永恒的思念</title>
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="memorial-styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="memorial-body">
+    <!-- 黑色透明遮罩层 -->
+    <div class="memorial-overlay"></div>
+    
+    <!-- 背景蜡烛效果 -->
+    <div class="candles-container">
+        <div class="candle left-candle"><div class="flame"></div></div>
+        <div class="candle center-candle"><div class="flame"></div></div>
+        <div class="candle right-candle"><div class="flame"></div></div>
+    </div>
+    
+    <!-- 花瓣飘落效果 -->
+    <div class="petals-container"></div>
+    
+    <header class="memorial-header">
+        <div class="memorial-nav">
+            <a href="/" class="back-home">
+                <i class="fas fa-home"></i> 返回博客
+            </a>
+            <div class="memorial-title">
+                <h1><i class="fas fa-church"></i> 永恒纪念堂</h1>
+                <p class="subtitle">Hall of Eternal Memory</p>
+            </div>
+        </div>
+    </header>
+    
+    <main class="memorial-main">
+        <!-- 纪念引言 -->
+        <section class="memorial-intro">
+            <div class="memorial-frame">
+                <div class="incense-stick left-incense"></div>
+                <div class="memorial-content">
+                    <h2><i class="fas fa-dove"></i> 逝者如斯，思念永存</h2>
+                    <p class="memorial-text">
+                        这里是一个安静的角落，用于缅怀逝去的亲人、朋友和值得我们永远铭记的人。
+                        愿逝者安息，生者坚强。每一段记忆都是生命的延续，每一次怀念都是爱的证明。
+                    </p>
+                    <div class="memorial-quote">
+                        <i class="fas fa-quote-left"></i>
+                        <p>死亡不是生命的终点，遗忘才是。</p>
+                        <span class="quote-author">——《寻梦环游记》</span>
+                    </div>
+                </div>
+                <div class="incense-stick right-incense"></div>
+            </div>
+        </section>
+        
+        <!-- 虚拟灵位 -->
+        <section class="memorial-altar">
+            <div class="altar-table">
+                <div class="altar-top">
+                    <div class="memorial-tablet">
+                        <div class="tablet-header">
+                            <i class="fas fa-star-of-david"></i>
+                            <h3>永垂不朽</h3>
+                            <i class="fas fa-star-of-david"></i>
+                        </div>
+                        <div class="tablet-content">
+                            <h4>先人之灵位</h4>
+                            <p class="memorial-date">
+                                <i class="far fa-calendar-alt"></i>
+                                设立于 2024年1月
+                            </p>
+                            <p class="memorial-message">
+                                "你们的音容笑貌永远留在我们心中"
+                            </p>
+                        </div>
+                        <div class="tablet-footer">
+                            <div class="offering">
+                                <i class="fas fa-wine-glass-alt"></i>
+                                <span>清酒</span>
+                            </div>
+                            <div class="offering">
+                                <i class="fas fa-apple-alt"></i>
+                                <span>鲜果</span>
+                            </div>
+                            <div class="offering">
+                                <i class="fas fa-seedling"></i>
+                                <span>鲜花</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 供品 -->
+                <div class="offerings">
+                    <div class="offering-item">
+                        <div class="offering-icon"><i class="fas fa-utensils"></i></div>
+                        <p>供品</p>
+                    </div>
+                    <div class="offering-item">
+                        <div class="offering-icon"><i class="fas fa-wine-bottle"></i></div>
+                        <p>清酒</p>
+                    </div>
+                    <div class="offering-item">
+                        <div class="offering-icon"><i class="fas fa-fruit"></i></div>
+                        <p>鲜果</p>
+                    </div>
+                    <div class="offering-item">
+                        <div class="offering-icon"><i class="fas fa-flower"></i></div>
+                        <p>花环</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- 纪念留言区 -->
+        <section class="memorial-messages">
+            <h2><i class="fas fa-book-open"></i> 纪念留言</h2>
+            <div class="messages-container">
+                <div class="message-card">
+                    <div class="message-header">
+                        <i class="fas fa-user-circle"></i>
+                        <div>
+                            <h4>张明</h4>
+                            <span class="message-date">2024-01-15</span>
+                        </div>
+                    </div>
+                    <p class="message-content">
+                        永远怀念您，您的教诲我将永远铭记在心。
+                    </p>
+                </div>
+                
+                <div class="message-card">
+                    <div class="message-header">
+                        <i class="fas fa-user-circle"></i>
+                        <div>
+                            <h4>李芳</h4>
+                            <span class="message-date">2024-01-10</span>
+                        </div>
+                    </div>
+                    <p class="message-content">
+                        愿您在天堂安息，我们会好好生活。
+                    </p>
+                </div>
+                
+                <div class="message-card">
+                    <div class="message-header">
+                        <i class="fas fa-user-circle"></i>
+                        <div>
+                            <h4>王伟</h4>
+                            <span class="message-date">2024-01-05</span>
+                        </div>
+                    </div>
+                    <p class="message-content">
+                        音容笑貌，历历在目；谆谆教诲，犹言在耳。
+                    </p>
+                </div>
+            </div>
+            
+            <!-- 添加留言表单 -->
+            <div class="add-message-form">
+                <h3><i class="fas fa-pen"></i> 添加纪念留言</h3>
+                <form id="memorialForm">
+                    <div class="form-group">
+                        <input type="text" id="name" placeholder="您的姓名" required>
+                    </div>
+                    <div class="form-group">
+                        <textarea id="message" placeholder="写下您的思念与祝福..." rows="4" required></textarea>
+                    </div>
+                    <button type="submit" class="submit-btn">
+                        <i class="fas fa-paper-plane"></i> 敬献留言
+                    </button>
+                </form>
+            </div>
+        </section>
+        
+        <!-- 纪念诗文 -->
+        <section class="memorial-poems">
+            <h2><i class="fas fa-scroll"></i> 纪念诗文</h2>
+            <div class="poems-container">
+                <div class="poem-card">
+                    <h4>《江城子·乙卯正月二十日夜记梦》</h4>
+                    <p class="poem-author">苏轼</p>
+                    <p class="poem-content">
+                        十年生死两茫茫，不思量，自难忘。<br>
+                        千里孤坟，无处话凄凉。<br>
+                        纵使相逢应不识，尘满面，鬓如霜。
+                    </p>
+                </div>
+                
+                <div class="poem-card">
+                    <h4>《离思》</h4>
+                    <p class="poem-author">元稹</p>
+                    <p class="poem-content">
+                        曾经沧海难为水，除却巫山不是云。<br>
+                        取次花丛懒回顾，半缘修道半缘君。
+                    </p>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <footer class="memorial-footer">
+        <div class="memorial-info">
+            <p><i class="fas fa-candle"></i> 此页面为虚拟纪念场所，表达对逝者的尊重与怀念</p>
+            <p class="footer-note">
+                <i class="far fa-heart"></i> 
+                生命虽短暂，记忆却永恒。珍惜当下，感恩相遇。
+            </p>
+        </div>
+        <div class="memorial-actions">
+            <button class="pray-btn" id="lightCandle">
+                <i class="fas fa-fire"></i> 点亮蜡烛
+            </button>
+            <button class="pray-btn" id="playMusic">
+                <i class="fas fa-music"></i> 播放安魂曲
+            </button>
+            <button class="pray-btn" id="momentSilence">
+                <i class="fas fa-hand-peace"></i> 默哀片刻
+            </button>
+        </div>
+        <p class="copyright">© 2024 永恒纪念堂 | 设计：庄重肃穆</p>
+    </footer>
+    
+    <!-- 音乐播放器 -->
+    <div class="music-player" id="musicPlayer">
+        <audio id="memorialMusic" loop>
+            <!-- 这里可以添加实际的音乐文件 -->
+            <source src="https://assets.mixkit.co/music/preview/mixkit-sad-memories-125.mp3" type="audio/mpeg">
+        </audio>
+        <div class="music-controls">
+            <button id="playPauseBtn"><i class="fas fa-play"></i></button>
+            <span class="music-title">安魂曲</span>
+            <button id="volumeBtn"><i class="fas fa-volume-up"></i></button>
+        </div>
+    </div>
+    
+    <!-- 蜡烛点亮效果 -->
+    <div class="virtual-candles" id="virtualCandles"></div>
+    
+    <script src="memorial-scripts.js"></script>
+</body>
+</html>

@@ -259,3 +259,30 @@ textarea {
     resize: vertical;
 }
 
+/* 灵堂页面链接样式 */
+.memorial-link {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    z-index: 1000;
+}
+
+.memorial-link a {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.8rem 1.5rem;
+    background: rgba(40, 30, 40, 0.8);
+    border: 1px solid rgba(139, 0, 0, 0.3);
+    color: #e8d3b9;
+    text-decoration: none;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+}
+
+.memorial-link a:hover {
+    background: rgba(139, 0, 0, 0.2);
+    border-color: rgba(139, 0, 0, 0.5);
+    transform: translateY(-2px);
+}
