@@ -94,6 +94,8 @@
 /* 纪念引言 */
 .memorial-intro {
     margin-bottom: 3rem;
+    display: flex;           /* 添加这行 */
+    justify-content: center; /* 添加这行 */
 }
 
 .memorial-frame {
@@ -105,8 +107,10 @@
     display: flex;
     align-items: center;
     gap: 2rem;
-    justify-content: center;
-    text-align: center;
+    justify-content: center; /* 确保内部内容居中 */
+    max-width: 900px;        /* 添加最大宽度限制 */
+    width: 100%;             /* 添加宽度100% */
+    margin: 0 auto;          /* 添加自动外边距实现居中 */
 }
 
 .incense-stick {
@@ -143,10 +147,24 @@
 .memorial-content {
     flex: 1;
     text-align: center;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+    display: flex;                  /* 添加这行 */
+    flex-direction: column;         /* 添加这行 */
+    align-items: center;            /* 添加这行 */
+    justify-content: center;        /* 添加这行 */
+    min-width: 0;                   /* 防止内容溢出 */
+}
+.memorial-content h2,
+.memorial-text,
+.memorial-quote {
+    width: 100%;
+    text-align: center;
+}
+.incense-stick {
+    width: 4px;
+    height: 100px;
+    background: linear-gradient(to bottom, #8B4513, #D2691E, #F4A460);
+    position: relative;
+    flex-shrink: 0; /* 防止香炉被压缩 */
 }
 
 .memorial-content h2 {
