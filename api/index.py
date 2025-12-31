@@ -56,7 +56,7 @@ class MemorialMessage(BaseModel):
 class CreateMessageRequest(BaseModel):
     author_name: str
     message_content: str
-    is_private: Optional[bool] = False
+    # is_private: Optional[bool] = False
 
 # 数据库连接池
 pool = None
@@ -211,12 +211,12 @@ async def fetch_all_messages(include_private: bool = False):
         async with conn.cursor(aiomysql.DictCursor) as cursor:
             # 构建查询条件
             where_clause = "WHERE status = 'approved'"
-            if not include_private:
-                where_clause += " AND is_private = FALSE"
+            # if not include_private:
+            #     where_clause += " AND is_private = FALSE"
             
             query = f"""
                 SELECT id, author_name, message_content, 
-                       created_at, status, is_private
+                       created_at, status
                 FROM memorial_messages
                 {where_clause}
                 ORDER BY created_at DESC
@@ -246,7 +246,7 @@ async def create_message(message_data: CreateMessageRequest, client_ip: Optional
                 message_data.author_name,
                 message_data.message_content,
                 client_ip,
-                message_data.is_private
+                # message_data.is_private
             )
             
             await cursor.execute(query, values)
@@ -258,7 +258,7 @@ async def create_message(message_data: CreateMessageRequest, client_ip: Optional
             # 返回完整的留言信息
             await cursor.execute("""
                 SELECT id, author_name, message_content, 
-                       created_at, status, is_private
+                       created_at, status
                 FROM memorial_messages
                 WHERE id = %s
             """, (message_id,))
