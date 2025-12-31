@@ -2,23 +2,22 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from datetime import datetime
-import json
+from typing import List, Optional
+import aiomysql
 import os
-<<<<<<< HEAD
 from dotenv import load_dotenv
 import logging
-from fastapi.security import HTTPBasic, HTTPBasicCredentials
-import secrets
 
-=======
->>>>>>> parent of 29015da (Integrate MySQL database and refactor API routes)
+# 加载环境变量
+load_dotenv()
 
-from fastapi import APIRouter  # 新增导入
+# 配置日志
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
-app = FastAPI()
-api_router = APIRouter(prefix="/api")  # 创建一个带前缀的路由器
+app = FastAPI(title="个人博客API", version="1.0.0")
 
-# 解决跨域问题（生产环境建议指定具体域名，而非["*"]）
+# 解决跨域问题
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -26,27 +25,25 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-# 添加HTTP Basic认证
-security = HTTPBasic()
 
-# 博客发布请求模型
-class BlogPostCreate(BaseModel):
+# 数据模型
+class Tag(BaseModel):
+    id: int
+    name: str
+    slug: str
+
+class BlogPost(BaseModel):
+    id: int
     title: str
     content: str
     excerpt: Optional[str] = None
     cover_image: Optional[str] = None
     status: str = "published"
-    tag_names: List[str] = []  # 标签名称列表
-
-# 数据模型
-class BlogPost(BaseModel):
-    id: int
-    title: str
-    content: str
+    view_count: int = 0
     created_at: datetime
-    tags: list[str] = []
+    updated_at: datetime
+    tags: List[Tag] = []
 
-<<<<<<< HEAD
 # 数据库连接池
 pool = None
 
@@ -63,20 +60,6 @@ DB_CONFIG = {
     "autocommit": True,
     "charset": "utf8mb4"
 }
-
-# 认证依赖函数
-async def authenticate(credentials: HTTPBasicCredentials = Depends(security)):
-    correct_username = os.getenv("ADMIN_USER", "admin")
-    correct_password = os.getenv("ADMIN_PASSWORD", "password")
-    
-    if not (secrets.compare_digest(credentials.username, correct_username) and 
-            secrets.compare_digest(credentials.password, correct_password)):
-        raise HTTPException(
-            status_code=401,
-            detail="认证失败",
-            headers={"WWW-Authenticate": "Basic"},
-        )
-    return credentials.username
 
 async def get_db_connection():
     """获取数据库连接"""
@@ -237,115 +220,63 @@ async def search_posts(keyword: str = None, tag: str = None):
             await cursor.execute(query, params)
             return await cursor.fetchall()
 
-async def create_blog_post(post_data: BlogPostCreate):
-    """创建新博客文章"""
-    async with (await get_db_connection()).acquire() as conn:
-        async with conn.cursor() as cursor:
-            try:
-                # 插入博客文章
-                await cursor.execute(
-                    """INSERT INTO blog_posts 
-                    (title, content, excerpt, cover_image, status) 
-                    VALUES (%s, %s, %s, %s, %s)""",
-                    (post_data.title, post_data.content, post_data.excerpt, 
-                     post_data.cover_image, post_data.status)
-                )
-                
-                post_id = cursor.lastrowid
-                
-                # 处理标签
-                if post_data.tag_names:
-                    for tag_name in post_data.tag_names:
-                        # 检查标签是否存在
-                        await cursor.execute(
-                            "SELECT id FROM tags WHERE name = %s", (tag_name,)
-                        )
-                        tag_result = await cursor.fetchone()
-                        
-                        if tag_result:
-                            tag_id = tag_result
-                        else:
-                            # 创建新标签
-                            slug = tag_name.lower().replace(' ', '-')
-                            await cursor.execute(
-                                "INSERT INTO tags (name, slug) VALUES (%s, %s)",
-                                (tag_name, slug)
-                            )
-                            tag_id = cursor.lastrowid
-                        
-                        # 建立文章-标签关联
-                        await cursor.execute(
-                            "INSERT INTO post_tags (post_id, tag_id) VALUES (%s, %s)",
-                            (post_id, tag_id)
-                        )
-                
-                await conn.commit()
-                return post_id
-                
-            except Exception as e:
-                await conn.rollback()
-                logger.error(f"创建博客文章失败: {e}")
-                raise HTTPException(status_code=500, detail="创建文章失败")
-
 # API路由
 @app.get("/api/posts")
 async def get_posts(include_draft: bool = False):
-=======
-# 模拟数据库
-BLOG_POSTS = [
-    BlogPost(
-        id=1,
-        title="我的第一篇博客",
-        content="这是我的个人博客首篇文章，主要分享Python开发经验...",
-        created_at=datetime(2025, 1, 15),
-        tags=["Python", "编程"]
-    ),
-    BlogPost(
-        id=2,
-        title="Vercel部署指南",
-        content="详细讲解如何将Python应用部署到Vercel平台...",
-        created_at=datetime(2025, 2, 20),
-        tags=["部署", "云服务"]
-    )
-]
-# 将原来的路由装饰器从 @app.get 改为 @api_router.get
-@api_router.get("/posts")
-async def get_posts():
->>>>>>> parent of 29015da (Integrate MySQL database and refactor API routes)
     """获取所有博客文章"""
-    return [post.dict() for post in BLOG_POSTS]
+    try:
+        posts = await fetch_all_posts(include_draft)
+        return posts
+    except Exception as e:
+        logger.error(f"获取文章列表失败: {e}")
+        raise HTTPException(status_code=500, detail="获取文章列表失败")
 
-@api_router.get("/posts/{post_id}")
+@app.get("/api/posts/{post_id}")
 async def get_post(post_id: int):
     """根据ID获取单篇文章"""
-    for post in BLOG_POSTS:
-        if post.id == post_id:
-            return post.dict()
-    raise HTTPException(status_code=404, detail="文章未找到")
+    try:
+        post = await fetch_post_by_id(post_id)
+        if not post:
+            raise HTTPException(status_code=404, detail="文章未找到")
+        return post
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"获取文章详情失败: {e}")
+        raise HTTPException(status_code=500, detail="获取文章详情失败")
 
+@app.get("/api/posts/search")
+async def search_posts_api(
+    keyword: Optional[str] = None,
+    tag: Optional[str] = None,
+    limit: int = 20,
+    offset: int = 0
+):
+    """搜索文章API"""
+    try:
+        posts = await search_posts(keyword, tag)
+        return {
+            "total": len(posts),
+            "limit": limit,
+            "offset": offset,
+            "posts": posts[offset:offset + limit]
+        }
+    except Exception as e:
+        logger.error(f"搜索文章失败: {e}")
+        raise HTTPException(status_code=500, detail="搜索文章失败")
 
-# 将路由器挂载到应用上
-app.include_router(api_router)
-
-<<<<<<< HEAD
-# @app.post("/api/seed")
-# async def create_post(
-#     post: BlogPostCreate, 
-#     username: str = Depends(authenticate)
-# ):
-#     """创建新博客文章（需要管理员认证）"""
-#     try:
-#         post_id = await create_blog_post(post)
-#         return {
-#             "status": "success", 
-#             "message": "博客发布成功", 
-#             "post_id": post_id
-#         }
-#     except HTTPException:
-#         raise
-#     except Exception as e:
-#         logger.error(f"发布文章异常: {e}")
-#         raise HTTPException(status_code=500, detail="服务器内部错误")
+@app.get("/api/health")
+async def health_check():
+    """健康检查端点"""
+    try:
+        async with (await get_db_connection()).acquire() as conn:
+            async with conn.cursor() as cursor:
+                await cursor.execute("SELECT 1")
+                await cursor.fetchone()
+        return {"status": "healthy", "database": "connected"}
+    except Exception as e:
+        logger.error(f"数据库连接检查失败: {e}")
+        return {"status": "unhealthy", "database": "disconnected", "error": str(e)}
 
 # # 测试数据插入端点（仅用于开发环境）
 # @app.post("/api/dev/seed")
@@ -398,13 +329,6 @@ app.include_router(api_router)
 #         raise HTTPException(status_code=500, detail=f"插入测试数据失败: {e}")
 
 # 根路径
-=======
-# 可选：添加一个根路径测试，方便验证
->>>>>>> parent of 29015da (Integrate MySQL database and refactor API routes)
 @app.get("/")
 async def root():
-    return {"message": "FastAPI 后端正在运行，请访问 /api/posts"}
-
-# 关键修改：确保Vercel直接使用 `app` 实例
-# 删除或注释掉下面这行
-# handler = app
+    return {"message": "博客API服务运行正常", "docs": "/docs", "health": "/api/health"}
