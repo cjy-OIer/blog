@@ -37,8 +37,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 });
 
-// ... 之前的代码保持不变 ...
-
 function renderPost(post) {
     const postContainer = document.querySelector('.post-detail');
     
@@ -46,13 +44,10 @@ function renderPost(post) {
         <div class="post-header">
             <h1>${post.title}</h1>
             <div class="post-meta">
-                <span>发布时间: ${new Date(post.created_at).toLocaleDateString('zh-CN')}</span>
-                <span>阅读次数: ${post.view_count || 0}</span>
-                <span>最后更新: ${new Date(post.updated_at).toLocaleDateString('zh-CN')}</span>
+                <span>发布时间: ${new Date(post.created_at).toLocaleDateString('zh-CN')} ${new Date(post.created_at).toLocaleTimeString('zh-CN', {hour: '2-digit', minute:'2-digit'})}</span>
+                <span>文章ID: ${post.id}</span>
             </div>
         </div>
-        
-        ${post.cover_image ? `<img src="${post.cover_image}" alt="${post.title}" class="post-cover">` : ''}
         
         <div class="post-content">
             ${formatContent(post.content)}
@@ -60,11 +55,12 @@ function renderPost(post) {
         
         <div class="post-footer">
             <div class="tag-list">
-                ${(post.tags || []).map(tag => `<span class="tag">${tag.name}</span>`).join('')}
+                ${post.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
             </div>
         </div>
     `;
 }
+
 function formatContent(content) {
     // 将内容按段落分割并添加HTML标签
     return content
