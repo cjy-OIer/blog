@@ -104,6 +104,7 @@
     border-radius: 8px;
     padding: 2rem;
     position: relative;
+    flex-direction: column;
     display: flex;
     align-items: center;
     gap: 2rem;
