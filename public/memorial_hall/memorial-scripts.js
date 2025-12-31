@@ -51,10 +51,6 @@ document.addEventListener('DOMContentLoaded', function() {
     
     playMusicBtn.addEventListener('click', function() {
         if (!isPlaying) {
-            musicPlayer.play().catch(e => {
-                console.log('音频播放失败:', e);
-                showMessage('音乐播放失败，请检查浏览器设置', 'error');
-            });
             isPlaying = true;
             playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
             showMessage('安魂曲播放中...', 'success');
