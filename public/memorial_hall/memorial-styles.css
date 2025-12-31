@@ -691,11 +691,14 @@
 }
 /* 纪念照片区样式 */
 .memorial-photos {
-    margin: 3rem 0;
-    padding: 2rem;
-    background: rgba(30, 25, 40, 0.6);
-    border: 1px solid rgba(139, 0, 0, 0.3);
-    border-radius: 8px;
+    width: 100%;          /* 宽度充满容器 */
+    height: 300px;        /* 固定一个高度，或者使用 max-height */
+    object-fit: cover;    /* 关键属性：裁剪填充，保持比例 */
+    display: block;
+    /* 移除或注释掉旧的渐变背景，确保图片能显示 */
+    /* background: linear-gradient(...); */ 
+    border: 1px solid rgba(139, 0, 0, 0.2);
+    border-radius: 4px;   /* 可选：让图片角落也圆润一些 */
 }
 
 .memorial-photos h2 {
