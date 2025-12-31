@@ -114,6 +114,154 @@
             </div>
         </section>
         
+                <!-- 纪念照片区 -->
+        <section class="memorial-photos">
+            <h2><i class="fas fa-images"></i> 纪念影像</h2>
+            <p class="section-subtitle">音容笑貌，永存心间</p>
+            
+            <div class="photo-gallery">
+                <!-- 主纪念照片 -->
+                <div class="main-photo">
+                    <div class="photo-frame memorial-frame">
+                        <img src="" alt="https://ibb.co/tMKXBDyt" class="memorial-photo" id="mainMemorialPhoto">
+                        <div class="photo-caption">
+                            <h4>永恒的回忆</h4>
+                            <p>【请在此处填写照片描述】</p>
+                            <div class="photo-date">
+                                <i class="far fa-calendar-alt"></i>
+                                <span>【请在此处填写拍摄时间】</span>
+                            </div>
+                        </div>
+                        <div class="photo-overlay">
+                            <button class="view-btn" onclick="viewPhoto('main')">
+                                <i class="fas fa-expand"></i> 放大瞻仰
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 照片墙 -->
+                <div class="photo-wall">
+                    <h3><i class="fas fa-th"></i> 时光相册</h3>
+                    
+                    <div class="wall-container">
+                        <!-- 照片1 -->
+                        <div class="wall-photo">
+                            <div class="wall-frame">
+                                <img src="" alt="https://ibb.co/tMKXBDyt" class="wall-img" 
+                                     data-large="" 
+                                     data-title="【照片1标题】"
+                                     data-desc="【照片1描述】">
+                                <div class="wall-caption">
+                                    <i class="fas fa-heart"></i>
+                                    <span>珍贵一刻</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 照片2 -->
+                        <div class="wall-photo">
+                            <div class="wall-frame">
+                                <img src="" alt="https://ibb.co/HpBBzBQ7" class="wall-img"
+                                     data-large=""
+                                     data-title="【照片2标题】"
+                                     data-desc="【照片2描述】">
+                                <div class="wall-caption">
+                                    <i class="fas fa-star"></i>
+                                    <span>美好时光</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 照片3 -->
+                        <div class="wall-photo">
+                            <div class="wall-frame">
+                                <img src="" alt="https://ibb.co/0VVv0ZsT" class="wall-img"
+                                     data-large=""
+                                     data-title="【照片3标题】"
+                                     data-desc="【照片3描述】">
+                                <div class="wall-caption">
+                                    <i class="fas fa-memory"></i>
+                                    <span>温馨回忆</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 照片4 -->
+                        <div class="wall-photo">
+                            <div class="wall-frame">
+                                <img src="" alt="https://ibb.co/zhYGQh2J" class="wall-img"
+                                     data-large=""
+                                     data-title="【照片4标题】"
+                                     data-desc="【照片4描述】">
+                                <div class="wall-caption">
+                                    <i class="fas fa-history"></i>
+                                    <span>往日情怀</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 照片5 -->
+                        <div class="wall-photo">
+                            <div class="wall-frame">
+                                <img src="" alt="https://ibb.co/WSTSxrB" class="wall-img"
+                                     data-large=""
+                                     data-title="【照片5标题】"
+                                     data-desc="【照片5描述】">
+                                <div class="wall-caption">
+                                    <i class="fas fa-award"></i>
+                                    <span>光辉时刻</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 照片6 -->
+                        <div class="wall-photo">
+                            <div class="wall-frame">
+                                <img src="" alt="https://ibb.co/HpBBzBQ7" class="wall-img"
+                                     data-large=""
+                                     data-title="【照片6标题】"
+                                     data-desc="【照片6描述】">
+                                <div class="wall-caption">
+                                    <i class="fas fa-users"></i>
+                                    <span>亲情永恒</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 添加照片提示 -->
+                    <div class="add-photo-note">
+                        <div class="note-icon">
+                            <i class="fas fa-camera-retro"></i>
+                        </div>
+                        <div class="note-content">
+                            <h4>添加纪念照片</h4>
+                            <p>请将您的照片链接填入上述 <code>src=""</code> 属性中，并填写描述信息</p>
+                            <p class="note-example">示例: <code>src="https://example.com/photo.jpg"</code></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 照片上传说明 -->
+            <div class="upload-instructions">
+                <details>
+                    <summary><i class="fas fa-info-circle"></i> 如何添加照片？</summary>
+                    <div class="instructions-content">
+                        <ol>
+                            <li>将照片上传到图床服务（如 <a href="https://imgbb.com/" target="_blank">ImgBB</a>）</li>
+                            <li>获取照片的直接链接（通常以 .jpg、.png 结尾）</li>
+                            <li>将链接填入对应的 <code>src=""</code> 属性中</li>
+                            <li>可选：为 <code>data-large=""</code> 填入高清版本链接，用于放大查看</li>
+                            <li>填写 <code>data-title</code> 和 <code>data-desc</code> 属性作为照片标题和描述</li>
+                        </ol>
+                        <p class="note">注意：请使用可靠的图床服务，确保链接长期有效</p>
+                    </div>
+                </details>
+            </div>
+        </section>
+
         <!-- 纪念留言区 -->
         <section class="memorial-messages">
             <h2><i class="fas fa-book-open"></i> 纪念留言</h2>
@@ -122,7 +270,7 @@
                     <div class="message-header">
                         <i class="fas fa-user-circle"></i>
                         <div>
-                            <h4>张明</h4>
+                            <h4>陈泽</h4>
                             <span class="message-date">2024-01-15</span>
                         </div>
                     </div>
@@ -135,7 +283,7 @@
                     <div class="message-header">
                         <i class="fas fa-user-circle"></i>
                         <div>
-                            <h4>李芳</h4>
+                            <h4>陈泽</h4>
                             <span class="message-date">2024-01-10</span>
                         </div>
                     </div>
@@ -148,7 +296,7 @@
                     <div class="message-header">
                         <i class="fas fa-user-circle"></i>
                         <div>
-                            <h4>王伟</h4>
+                            <h4>陈泽</h4>
                             <span class="message-date">2024-01-05</span>
                         </div>
                     </div>

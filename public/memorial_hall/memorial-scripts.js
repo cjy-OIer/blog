@@ -333,3 +333,167 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 });
+
+// 照片查看功能
+function viewPhoto(type, index = 0) {
+    const modal = document.createElement('div');
+    modal.className = 'photo-modal';
+    modal.id = 'photoModal';
+    
+    let imgSrc = '';
+    let title = '';
+    let description = '';
+    
+    if (type === 'main') {
+        const mainPhoto = document.getElementById('mainMemorialPhoto');
+        imgSrc = mainPhoto.src || '';
+        title = '永恒的回忆';
+        description = '主纪念照片';
+    } else {
+        const photos = document.querySelectorAll('.wall-img');
+        if (photos[index]) {
+            const photo = photos[index];
+            imgSrc = photo.dataset.large || photo.src || '';
+            title = photo.dataset.title || '纪念照片';
+            description = photo.dataset.desc || '';
+        }
+    }
+    
+    // 如果有实际图片链接才显示图片，否则显示提示
+    const imgContent = imgSrc ? 
+        `<img src="${imgSrc}" alt="${title}" class="modal-img">` :
+        `<div class="no-photo-placeholder">
+            <i class="fas fa-camera-slash"></i>
+            <p>请先添加照片链接</p>
+        </div>`;
+    
+    modal.innerHTML = `
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal()">
+                <i class="fas fa-times"></i>
+            </button>
+            
+            ${imgContent}
+            
+            <div class="modal-info">
+                <h3>${title}</h3>
+                <p>${description}</p>
+                <p class="modal-date">
+                    <i class="far fa-calendar-alt"></i>
+                    拍摄时间：${imgSrc ? '待填写' : '请先添加照片'}
+                </p>
+            </div>
+            
+            <button class="modal-nav modal-prev" onclick="navigatePhoto(-1)">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <button class="modal-nav modal-next" onclick="navigatePhoto(1)">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+    modal.style.display = 'flex';
+    
+    // 阻止背景滚动
+    document.body.style.overflow = 'hidden';
+    
+    // 存储当前查看信息
+    modal.dataset.currentType = type;
+    modal.dataset.currentIndex = index;
+}
+
+function closeModal() {
+    const modal = document.getElementById('photoModal');
+    if (modal) {
+        modal.remove();
+    }
+    document.body.style.overflow = '';
+}
+
+function navigatePhoto(direction) {
+    const modal = document.getElementById('photoModal');
+    if (!modal) return;
+    
+    const currentType = modal.dataset.currentType;
+    const currentIndex = parseInt(modal.dataset.currentIndex);
+    
+    if (currentType === 'wall') {
+        const photos = document.querySelectorAll('.wall-img');
+        const newIndex = (currentIndex + direction + photos.length) % photos.length;
+        closeModal();
+        setTimeout(() => viewPhoto('wall', newIndex), 50);
+    }
+}
+
+// 为照片墙图片添加点击事件
+document.addEventListener('DOMContentLoaded', function() {
+    const wallPhotos = document.querySelectorAll('.wall-img');
+    wallPhotos.forEach((photo, index) => {
+        photo.addEventListener('click', () => viewPhoto('wall', index));
+        
+        // 添加键盘快捷键
+        photo.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                viewPhoto('wall', index);
+            }
+        });
+        
+        // 为可访问性添加tabindex
+        photo.setAttribute('tabindex', '0');
+    });
+    
+    // 添加模态框样式
+    const modalStyle = document.createElement('style');
+    modalStyle.textContent = `
+        .no-photo-placeholder {
+            width: 500px;
+            height: 300px;
+            background: rgba(40, 30, 20, 0.9);
+            border: 2px dashed #8B4513;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #b0a8a8;
+            text-align: center;
+            padding: 2rem;
+        }
+        
+        .no-photo-placeholder i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: #8B4513;
+        }
+        
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        
+        .photo-modal {
+            animation: modalFadeIn 0.3s ease;
+        }
+    `;
+    document.head.appendChild(modalStyle);
+    
+    // 添加ESC键关闭功能
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeModal();
+        }
+    });
+    
+    // 点击模态框背景关闭
+    document.addEventListener('click', function(e) {
+        const modal = document.getElementById('photoModal');
+        if (modal && e.target === modal) {
+            closeModal();
+        }
+    });
+});

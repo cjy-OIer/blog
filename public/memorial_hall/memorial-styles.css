@@ -665,3 +665,488 @@
         justify-content: center;
     }
 }
+/* 纪念照片区样式 */
+.memorial-photos {
+    margin: 3rem 0;
+    padding: 2rem;
+    background: rgba(30, 25, 40, 0.6);
+    border: 1px solid rgba(139, 0, 0, 0.3);
+    border-radius: 8px;
+}
+
+.memorial-photos h2 {
+    color: #e8d3b9;
+    text-align: center;
+    margin-bottom: 0.5rem;
+}
+
+.section-subtitle {
+    color: #b0a8a8;
+    text-align: center;
+    font-size: 0.9rem;
+    margin-bottom: 2rem;
+    font-style: italic;
+}
+
+/* 照片画廊布局 */
+.photo-gallery {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+/* 主照片样式 */
+.main-photo {
+    display: flex;
+    justify-content: center;
+}
+
+.memorial-frame {
+    position: relative;
+    width: 100%;
+    max-width: 500px;
+    background: rgba(20, 15, 10, 0.9);
+    border: 3px solid #8B4513;
+    border-radius: 4px;
+    padding: 10px;
+    box-shadow: 
+        0 0 20px rgba(139, 0, 0, 0.3),
+        inset 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.memorial-photo {
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+    display: block;
+    background: 
+        linear-gradient(45deg, 
+            rgba(40, 30, 20, 0.8) 25%, 
+            transparent 25%,
+            transparent 75%, 
+            rgba(40, 30, 20, 0.8) 75%),
+        linear-gradient(45deg, 
+            rgba(40, 30, 20, 0.8) 25%, 
+            transparent 25%,
+            transparent 75%, 
+            rgba(40, 30, 20, 0.8) 75%);
+    background-size: 40px 40px;
+    background-position: 0 0, 20px 20px;
+    border: 1px solid rgba(139, 0, 0, 0.2);
+}
+
+.memorial-photo::before {
+    content: "【请添加照片链接】";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #b0a8a8;
+    font-size: 0.9rem;
+    text-align: center;
+    z-index: 1;
+}
+
+.photo-caption {
+    padding: 1rem;
+    text-align: center;
+    border-top: 1px solid rgba(139, 0, 0, 0.2);
+    margin-top: 1rem;
+}
+
+.photo-caption h4 {
+    color: #e8d3b9;
+    margin-bottom: 0.5rem;
+}
+
+.photo-caption p {
+    color: #b0a8a8;
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+}
+
+.photo-date {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    color: #8a7f7f;
+    font-size: 0.8rem;
+}
+
+.photo-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.memorial-frame:hover .photo-overlay {
+    opacity: 1;
+}
+
+.view-btn {
+    background: rgba(139, 0, 0, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.3s ease;
+}
+
+.view-btn:hover {
+    background: rgba(160, 0, 0, 0.9);
+    transform: scale(1.05);
+}
+
+/* 照片墙样式 */
+.photo-wall {
+    margin-top: 2rem;
+}
+
+.photo-wall h3 {
+    color: #e8d3b9;
+    text-align: center;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid rgba(139, 0, 0, 0.3);
+    padding-bottom: 0.5rem;
+}
+
+.wall-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.wall-photo {
+    position: relative;
+}
+
+.wall-frame {
+    background: rgba(20, 15, 10, 0.9);
+    border: 2px solid #8B4513;
+    border-radius: 4px;
+    padding: 8px;
+    transition: all 0.3s ease;
+    height: 200px;
+    display: flex;
+    flex-direction: column;
+}
+
+.wall-frame:hover {
+    transform: translateY(-5px);
+    border-color: #D2691E;
+    box-shadow: 0 5px 15px rgba(139, 0, 0, 0.3);
+}
+
+.wall-img {
+    width: 100%;
+    height: 140px;
+    object-fit: cover;
+    flex: 1;
+    background: 
+        repeating-linear-gradient(45deg, 
+            rgba(40, 30, 20, 0.8) 0px, 
+            rgba(40, 30, 20, 0.8) 10px, 
+            rgba(30, 20, 10, 0.8) 10px, 
+            rgba(30, 20, 10, 0.8) 20px);
+    border: 1px solid rgba(139, 0, 0, 0.2);
+    position: relative;
+}
+
+.wall-img::before {
+    content: "照片";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #8a7f7f;
+    font-size: 0.8rem;
+}
+
+.wall-caption {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.5rem;
+    border-top: 1px solid rgba(139, 0, 0, 0.1);
+    margin-top: 0.5rem;
+    color: #b0a8a8;
+    font-size: 0.8rem;
+}
+
+.wall-caption i {
+    color: #D2691E;
+}
+
+/* 添加照片提示 */
+.add-photo-note {
+    background: rgba(40, 35, 50, 0.7);
+    border: 2px dashed rgba(139, 0, 0, 0.3);
+    border-radius: 8px;
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    margin-top: 1rem;
+}
+
+.note-icon {
+    font-size: 2rem;
+    color: #D2691E;
+}
+
+.note-content h4 {
+    color: #e8d3b9;
+    margin-bottom: 0.5rem;
+}
+
+.note-content p {
+    color: #b0a8a8;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.note-example {
+    background: rgba(20, 15, 30, 0.8);
+    padding: 0.5rem;
+    border-radius: 4px;
+    border-left: 3px solid #D2691E;
+    font-family: monospace;
+    font-size: 0.85rem;
+}
+
+.note-example code {
+    color: #e8d3b9;
+    background: none;
+}
+
+/* 上传说明 */
+.upload-instructions {
+    margin-top: 2rem;
+    background: rgba(30, 25, 40, 0.7);
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.upload-instructions details {
+    border: 1px solid rgba(139, 0, 0, 0.2);
+}
+
+.upload-instructions summary {
+    padding: 1rem;
+    background: rgba(40, 35, 50, 0.9);
+    color: #e8d3b9;
+    cursor: pointer;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: background 0.3s ease;
+}
+
+.upload-instructions summary:hover {
+    background: rgba(139, 0, 0, 0.1);
+}
+
+.upload-instructions summary::-webkit-details-marker {
+    display: none;
+}
+
+.instructions-content {
+    padding: 1.5rem;
+    border-top: 1px solid rgba(139, 0, 0, 0.2);
+}
+
+.instructions-content ol {
+    color: #c0b8a8;
+    padding-left: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.instructions-content li {
+    margin-bottom: 0.5rem;
+    line-height: 1.6;
+}
+
+.instructions-content a {
+    color: #D2691E;
+    text-decoration: none;
+    border-bottom: 1px dotted rgba(210, 105, 30, 0.5);
+}
+
+.instructions-content a:hover {
+    color: #e8d3b9;
+    border-bottom-style: solid;
+}
+
+.instructions-content .note {
+    color: #8a7f7f;
+    font-size: 0.85rem;
+    font-style: italic;
+    padding: 0.5rem;
+    background: rgba(20, 15, 30, 0.5);
+    border-radius: 4px;
+    margin-top: 1rem;
+}
+
+/* 图片查看模态框 */
+.photo-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.95);
+    z-index: 2000;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+}
+
+.modal-content {
+    max-width: 90%;
+    max-height: 90%;
+    position: relative;
+}
+
+.modal-img {
+    max-width: 100%;
+    max-height: 70vh;
+    object-fit: contain;
+    border: 2px solid #8B4513;
+    border-radius: 4px;
+}
+
+.modal-info {
+    background: rgba(20, 15, 10, 0.95);
+    border: 1px solid #8B4513;
+    border-radius: 4px;
+    padding: 1.5rem;
+    margin-top: 1rem;
+    max-width: 600px;
+}
+
+.modal-info h3 {
+    color: #e8d3b9;
+    margin-bottom: 0.5rem;
+}
+
+.modal-info p {
+    color: #c0b8a8;
+    margin-bottom: 0.5rem;
+}
+
+.modal-close {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    background: rgba(139, 0, 0, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+}
+
+.modal-close:hover {
+    background: rgba(160, 0, 0, 1);
+    transform: scale(1.1);
+}
+
+.modal-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(139, 0, 0, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    transition: all 0.3s ease;
+}
+
+.modal-nav:hover {
+    background: rgba(160, 0, 0, 0.9);
+}
+
+.modal-prev {
+    left: -70px;
+}
+
+.modal-next {
+    right: -70px;
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+    .wall-container {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 1rem;
+    }
+    
+    .wall-frame {
+        height: 180px;
+    }
+    
+    .wall-img {
+        height: 120px;
+    }
+    
+    .add-photo-note {
+        flex-direction: column;
+        text-align: center;
+        gap: 1rem;
+    }
+    
+    .modal-nav {
+        width: 40px;
+        height: 40px;
+        font-size: 1.2rem;
+    }
+    
+    .modal-prev {
+        left: 10px;
+    }
+    
+    .modal-next {
+        right: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .wall-container {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .memorial-photo {
+        height: 250px;
+    }
+}
