@@ -51,7 +51,7 @@ class MemorialMessage(BaseModel):
     message_content: str
     created_at: datetime
     status: str = "approved"
-    is_private: bool = False
+    # is_private: bool = False
 
 class CreateMessageRequest(BaseModel):
     author_name: str
@@ -238,8 +238,8 @@ async def create_message(message_data: CreateMessageRequest, client_ip: Optional
         async with conn.cursor() as cursor:
             query = """
                 INSERT INTO memorial_messages 
-                (author_name, message_content, author_ip, is_private)
-                VALUES (%s, %s, %s, %s)
+                (author_name, message_content, author_ip)
+                VALUES (%s, %s, %s)
             """
             
             values = (
@@ -273,7 +273,6 @@ async def get_message_stats():
             await cursor.execute("""
                 SELECT 
                     COUNT(*) as total_messages,
-                    COUNT(CASE WHEN is_private = TRUE THEN 1 END) as private_messages,
                     COUNT(CASE WHEN status = 'pending' THEN 1 END) as pending_messages,
                     DATE(created_at) as date,
                     COUNT(*) as daily_count

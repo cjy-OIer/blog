@@ -547,7 +547,7 @@ class MemorialMessages {
                         <h4>${this.escapeHtml(msg.author_name)}</h4>
                         <span class="message-date">
                             ${this.formatDate(msg.created_at)}
-                            ${msg.is_private ? '<i class="fas fa-lock private-icon" title="私密留言"></i>' : ''}
+                            // ${msg.is_private ? '<i class="fas fa-lock private-icon" title="私密留言"></i>' : ''}
                         </span>
                     </div>
                 </div>
@@ -566,12 +566,12 @@ class MemorialMessages {
         
         const nameInput = document.getElementById('name');
         const messageInput = document.getElementById('message');
-        const isPrivateCheckbox = document.getElementById('isPrivate');
+        // const isPrivateCheckbox = document.getElementById('isPrivate');
         
         const messageData = {
             author_name: nameInput.value.trim(),
             message_content: messageInput.value.trim(),
-            is_private: isPrivateCheckbox ? isPrivateCheckbox.checked : false
+            // is_private: isPrivateCheckbox ? isPrivateCheckbox.checked : false
         };
         
         // 验证
@@ -739,23 +739,23 @@ document.addEventListener('DOMContentLoaded', () => {
     // 添加到全局，方便调试
     window.memorialMessages = memorialMessages;
     
-    // 添加私密留言选项到表单
-    const messageForm = document.getElementById('memorialForm');
-    if (messageForm) {
-        const isPrivateDiv = document.createElement('div');
-        isPrivateDiv.className = 'form-group private-option';
-        isPrivateDiv.innerHTML = `
-            <label>
-                <input type="checkbox" id="isPrivate" name="isPrivate">
-                <i class="fas fa-lock"></i> 设为私密留言（仅自己可见）
-            </label>
-        `;
+    // // 添加私密留言选项到表单
+    // const messageForm = document.getElementById('memorialForm');
+    // if (messageForm) {
+    //     const isPrivateDiv = document.createElement('div');
+    //     isPrivateDiv.className = 'form-group private-option';
+    //     isPrivateDiv.innerHTML = `
+    //         <label>
+    //             <input type="checkbox" id="isPrivate" name="isPrivate">
+    //             <i class="fas fa-lock"></i> 设为私密留言（仅自己可见）
+    //         </label>
+    //     `;
         
-        const submitBtn = messageForm.querySelector('.submit-btn');
-        if (submitBtn) {
-            messageForm.insertBefore(isPrivateDiv, submitBtn);
-        }
-    }
+    //     const submitBtn = messageForm.querySelector('.submit-btn');
+    //     if (submitBtn) {
+    //         messageForm.insertBefore(isPrivateDiv, submitBtn);
+    //     }
+    // }
     
     // 添加CSS样式
     const style = document.createElement('style');
