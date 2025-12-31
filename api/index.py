@@ -44,6 +44,20 @@ class BlogPost(BaseModel):
     updated_at: datetime
     tags: List[Tag] = []
 
+# 纪念留言数据模型
+class MemorialMessage(BaseModel):
+    id: int
+    author_name: str
+    message_content: str
+    created_at: datetime
+    status: str = "approved"
+    is_private: bool = False
+
+class CreateMessageRequest(BaseModel):
+    author_name: str
+    message_content: str
+    is_private: Optional[bool] = False
+
 # 数据库连接池
 pool = None
 
@@ -188,6 +202,90 @@ async def fetch_post_by_id(post_id: int):
                 "tags": tags
             }
 
+# 【请确保你的MySQL数据库连接信息已正确配置】
+# 接在之前配置的 DB_CONFIG 部分之后
+
+async def fetch_all_messages(include_private: bool = False):
+    """获取所有纪念留言"""
+    async with (await get_db_connection()).acquire() as conn:
+        async with conn.cursor(aiomysql.DictCursor) as cursor:
+            # 构建查询条件
+            where_clause = "WHERE status = 'approved'"
+            if not include_private:
+                where_clause += " AND is_private = FALSE"
+            
+            query = f"""
+                SELECT id, author_name, message_content, 
+                       created_at, status, is_private
+                FROM memorial_messages
+                {where_clause}
+                ORDER BY created_at DESC
+            """
+            
+            await cursor.execute(query)
+            messages = await cursor.fetchall()
+            
+            # 格式化日期
+            for message in messages:
+                if isinstance(message['created_at'], str):
+                    message['created_at'] = datetime.fromisoformat(message['created_at'].replace('Z', '+00:00'))
+            
+            return messages
+
+async def create_message(message_data: CreateMessageRequest, client_ip: Optional[str] = None):
+    """创建新的纪念留言"""
+    async with (await get_db_connection()).acquire() as conn:
+        async with conn.cursor() as cursor:
+            query = """
+                INSERT INTO memorial_messages 
+                (author_name, message_content, author_ip, is_private)
+                VALUES (%s, %s, %s, %s)
+            """
+            
+            values = (
+                message_data.author_name,
+                message_data.message_content,
+                client_ip,
+                message_data.is_private
+            )
+            
+            await cursor.execute(query, values)
+            await conn.commit()
+            
+            # 获取刚插入的留言ID
+            message_id = cursor.lastrowid
+            
+            # 返回完整的留言信息
+            await cursor.execute("""
+                SELECT id, author_name, message_content, 
+                       created_at, status, is_private
+                FROM memorial_messages
+                WHERE id = %s
+            """, (message_id,))
+            
+            result = await cursor.fetchone()
+            return dict(result) if result else None
+
+async def get_message_stats():
+    """获取留言统计信息"""
+    async with (await get_db_connection()).acquire() as conn:
+        async with conn.cursor(aiomysql.DictCursor) as cursor:
+            await cursor.execute("""
+                SELECT 
+                    COUNT(*) as total_messages,
+                    COUNT(CASE WHEN is_private = TRUE THEN 1 END) as private_messages,
+                    COUNT(CASE WHEN status = 'pending' THEN 1 END) as pending_messages,
+                    DATE(created_at) as date,
+                    COUNT(*) as daily_count
+                FROM memorial_messages
+                WHERE status = 'approved'
+                GROUP BY DATE(created_at)
+                ORDER BY date DESC
+                LIMIT 7
+            """)
+            
+            return await cursor.fetchall()
+
 async def search_posts(keyword: str = None, tag: str = None):
     """搜索文章（按关键词或标签）"""
     async with (await get_db_connection()).acquire() as conn:
@@ -277,6 +375,133 @@ async def health_check():
     except Exception as e:
         logger.error(f"数据库连接检查失败: {e}")
         return {"status": "unhealthy", "database": "disconnected", "error": str(e)}
+
+# 纪念留言API
+@app.get("/api/memorial/messages")
+async def get_messages(
+    include_private: bool = False,
+    limit: int = 50,
+    offset: int = 0
+):
+    """获取纪念留言列表"""
+    try:
+        messages = await fetch_all_messages(include_private)
+        
+        # 实现简单的分页
+        total = len(messages)
+        paginated_messages = messages[offset:offset + limit]
+        
+        return {
+            "total": total,
+            "limit": limit,
+            "offset": offset,
+            "messages": paginated_messages
+        }
+    except Exception as e:
+        logger.error(f"获取留言列表失败: {e}")
+        raise HTTPException(status_code=500, detail="获取留言列表失败")
+
+@app.post("/api/memorial/messages")
+async def create_new_message(
+    message: CreateMessageRequest,
+    request: Request
+):
+    """创建新的纪念留言"""
+    try:
+        # 获取客户端IP地址
+        client_ip = request.client.host if request.client else None
+        
+        # 简单的防刷逻辑（同一IP1分钟内只能提交一次）
+        if client_ip:
+            async with (await get_db_connection()).acquire() as conn:
+                async with conn.cursor() as cursor:
+                    await cursor.execute("""
+                        SELECT COUNT(*) as count 
+                        FROM memorial_messages 
+                        WHERE author_ip = %s 
+                        AND created_at > DATE_SUB(NOW(), INTERVAL 1 MINUTE)
+                    """, (client_ip,))
+                    
+                    result = await cursor.fetchone()
+                    if result and result['count'] > 3:
+                        raise HTTPException(
+                            status_code=429, 
+                            detail="提交过于频繁，请稍后再试"
+                        )
+        
+        # 创建留言
+        new_message = await create_message(message, client_ip)
+        
+        if not new_message:
+            raise HTTPException(status_code=500, detail="创建留言失败")
+        
+        # 记录日志
+        logger.info(f"新的纪念留言已创建 - 作者: {message.author_name}")
+        
+        return {
+            "message": "留言提交成功",
+            "data": new_message
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"创建留言失败: {e}")
+        raise HTTPException(status_code=500, detail="创建留言失败")
+
+@app.get("/api/memorial/stats")
+async def get_memorial_stats():
+    """获取纪念堂统计信息"""
+    try:
+        stats = await get_message_stats()
+        total = sum(day['daily_count'] for day in stats) if stats else 0
+        
+        return {
+            "total_messages": total,
+            "recent_stats": stats,
+            "last_updated": datetime.now().isoformat()
+        }
+    except Exception as e:
+        logger.error(f"获取统计信息失败: {e}")
+        return {
+            "total_messages": 0,
+            "recent_stats": [],
+            "last_updated": datetime.now().isoformat()
+        }
+
+# 管理员API（可选，如果需要审核功能）
+@app.put("/api/memorial/messages/{message_id}/status")
+async def update_message_status(
+    message_id: int,
+    status: str,
+    authorization: Optional[str] = Header(None)
+):
+    """更新留言状态（需要管理员权限）"""
+    # 这里可以添加管理员验证逻辑
+    if status not in ['pending', 'approved', 'rejected']:
+        raise HTTPException(status_code=400, detail="状态值无效")
+    
+    try:
+        async with (await get_db_connection()).acquire() as conn:
+            async with conn.cursor() as cursor:
+                await cursor.execute("""
+                    UPDATE memorial_messages 
+                    SET status = %s 
+                    WHERE id = %s
+                """, (status, message_id))
+                
+                if cursor.rowcount == 0:
+                    raise HTTPException(status_code=404, detail="留言未找到")
+                
+                await conn.commit()
+                
+        return {"message": "状态更新成功"}
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"更新留言状态失败: {e}")
+        raise HTTPException(status_code=500, detail="更新留言状态失败")
 
 # # 测试数据插入端点（仅用于开发环境）
 # @app.post("/api/dev/seed")

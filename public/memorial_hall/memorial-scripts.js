@@ -493,3 +493,367 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 });
+
+// 纪念留言功能
+class MemorialMessages {
+    constructor() {
+        this.apiBase = '/api/memorial';
+        this.messagesContainer = document.querySelector('.messages-container');
+        this.messageForm = document.getElementById('memorialForm');
+        this.init();
+    }
+    
+    async init() {
+        await this.loadMessages();
+        this.setupEventListeners();
+        this.updateMessageStats();
+    }
+    
+    async loadMessages() {
+        try {
+            const response = await fetch(`${this.apiBase}/messages?limit=20`);
+            
+            if (!response.ok) {
+                throw new Error(`HTTP错误: ${response.status}`);
+            }
+            
+            const data = await response.json();
+            this.renderMessages(data.messages);
+            
+        } catch (error) {
+            console.error('加载留言失败:', error);
+            this.showErrorMessage('留言加载失败，请稍后刷新重试');
+        }
+    }
+    
+    renderMessages(messages) {
+        if (!this.messagesContainer) return;
+        
+        if (messages.length === 0) {
+            this.messagesContainer.innerHTML = `
+                <div class="no-messages">
+                    <i class="fas fa-comment-slash"></i>
+                    <p>暂无留言，成为第一个留言者吧</p>
+                </div>
+            `;
+            return;
+        }
+        
+        this.messagesContainer.innerHTML = messages.map(msg => `
+            <div class="message-card" data-message-id="${msg.id}">
+                <div class="message-header">
+                    <i class="fas fa-user-circle"></i>
+                    <div>
+                        <h4>${this.escapeHtml(msg.author_name)}</h4>
+                        <span class="message-date">
+                            ${this.formatDate(msg.created_at)}
+                            ${msg.is_private ? '<i class="fas fa-lock private-icon" title="私密留言"></i>' : ''}
+                        </span>
+                    </div>
+                </div>
+                <p class="message-content">${this.escapeHtml(msg.message_content)}</p>
+                <div class="message-footer">
+                    <span class="message-id">#${msg.id}</span>
+                    ${msg.status === 'pending' ? 
+                        '<span class="pending-badge"><i class="fas fa-clock"></i> 审核中</span>' : ''}
+                </div>
+            </div>
+        `).join('');
+    }
+    
+    async submitMessage(event) {
+        event.preventDefault();
+        
+        const nameInput = document.getElementById('name');
+        const messageInput = document.getElementById('message');
+        const isPrivateCheckbox = document.getElementById('isPrivate');
+        
+        const messageData = {
+            author_name: nameInput.value.trim(),
+            message_content: messageInput.value.trim(),
+            is_private: isPrivateCheckbox ? isPrivateCheckbox.checked : false
+        };
+        
+        // 验证
+        if (!messageData.author_name || !messageData.message_content) {
+            this.showMessage('请填写完整信息', 'error');
+            return;
+        }
+        
+        if (messageData.author_name.length > 100) {
+            this.showMessage('姓名不能超过100个字符', 'error');
+            return;
+        }
+        
+        // 显示加载状态
+        const submitBtn = this.messageForm.querySelector('.submit-btn');
+        const originalText = submitBtn.innerHTML;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 提交中...';
+        submitBtn.disabled = true;
+        
+        try {
+            const response = await fetch(`${this.apiBase}/messages`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(messageData)
+            });
+            
+            const result = await response.json();
+            
+            if (!response.ok) {
+                throw new Error(result.detail || '提交失败');
+            }
+            
+            // 清空表单
+            this.messageForm.reset();
+            
+            // 显示成功消息
+            this.showMessage('留言提交成功！感谢您的纪念', 'success');
+            
+            // 重新加载留言列表
+            await this.loadMessages();
+            await this.updateMessageStats();
+            
+            // 滚动到最新的留言
+            this.scrollToNewMessage();
+            
+        } catch (error) {
+            console.error('提交留言失败:', error);
+            this.showMessage(`提交失败: ${error.message}`, 'error');
+            
+        } finally {
+            // 恢复按钮状态
+            submitBtn.innerHTML = originalText;
+            submitBtn.disabled = false;
+        }
+    }
+    
+    async updateMessageStats() {
+        try {
+            const response = await fetch(`${this.apiBase}/stats`);
+            const stats = await response.json();
+            
+            // 可以在这里更新页面上的统计信息
+            const statsElement = document.getElementById('messageStats');
+            if (statsElement) {
+                statsElement.innerHTML = `
+                    <span><i class="fas fa-comments"></i> 共 ${stats.total_messages} 条留言</span>
+                    <span><i class="fas fa-history"></i> 最近更新: ${new Date(stats.last_updated).toLocaleDateString()}</span>
+                `;
+            }
+            
+        } catch (error) {
+            console.error('更新统计信息失败:', error);
+        }
+    }
+    
+    scrollToNewMessage() {
+        const messages = this.messagesContainer.querySelectorAll('.message-card');
+        if (messages.length > 0) {
+            messages[0].scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+    }
+    
+    setupEventListeners() {
+        if (this.messageForm) {
+            this.messageForm.addEventListener('submit', (e) => this.submitMessage(e));
+        }
+        
+        // 添加定期刷新
+        setInterval(() => this.loadMessages(), 60000); // 每60秒刷新一次
+    }
+    
+    formatDate(dateString) {
+        const date = new Date(dateString);
+        const now = new Date();
+        const diffMs = now - date;
+        const diffMins = Math.floor(diffMs / 60000);
+        const diffHours = Math.floor(diffMs / 3600000);
+        const diffDays = Math.floor(diffMs / 86400000);
+        
+        if (diffMins < 1) return '刚刚';
+        if (diffMins < 60) return `${diffMins}分钟前`;
+        if (diffHours < 24) return `${diffHours}小时前`;
+        if (diffDays < 7) return `${diffDays}天前`;
+        
+        return date.toLocaleDateString('zh-CN');
+    }
+    
+    escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+    
+    showMessage(text, type) {
+        // 使用你现有的 showMessage 函数或创建一个新的
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `memorial-message-toast ${type}`;
+        messageDiv.textContent = text;
+        messageDiv.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 1rem 1.5rem;
+            border-radius: 4px;
+            z-index: 2000;
+            animation: slideIn 0.3s ease;
+            color: white;
+            ${type === 'success' ? 'background: rgba(34, 139, 34, 0.9);' : 
+              type === 'error' ? 'background: rgba(139, 0, 0, 0.9);' : 
+              'background: rgba(30, 60, 114, 0.9);'}
+        `;
+        
+        document.body.appendChild(messageDiv);
+        
+        setTimeout(() => {
+            messageDiv.style.opacity = '0';
+            messageDiv.style.transition = 'opacity 0.3s';
+            setTimeout(() => messageDiv.remove(), 300);
+        }, 3000);
+    }
+    
+    showErrorMessage(text) {
+        if (this.messagesContainer) {
+            this.messagesContainer.innerHTML = `
+                <div class="error-message">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <h3>加载失败</h3>
+                    <p>${text}</p>
+                    <button onclick="location.reload()" class="retry-btn">
+                        <i class="fas fa-redo"></i> 重新加载
+                    </button>
+                </div>
+            `;
+        }
+    }
+}
+
+// 在DOM加载完成后初始化
+document.addEventListener('DOMContentLoaded', () => {
+    // 初始化留言系统
+    const memorialMessages = new MemorialMessages();
+    
+    // 添加到全局，方便调试
+    window.memorialMessages = memorialMessages;
+    
+    // 添加私密留言选项到表单
+    const messageForm = document.getElementById('memorialForm');
+    if (messageForm) {
+        const isPrivateDiv = document.createElement('div');
+        isPrivateDiv.className = 'form-group private-option';
+        isPrivateDiv.innerHTML = `
+            <label>
+                <input type="checkbox" id="isPrivate" name="isPrivate">
+                <i class="fas fa-lock"></i> 设为私密留言（仅自己可见）
+            </label>
+        `;
+        
+        const submitBtn = messageForm.querySelector('.submit-btn');
+        if (submitBtn) {
+            messageForm.insertBefore(isPrivateDiv, submitBtn);
+        }
+    }
+    
+    // 添加CSS样式
+    const style = document.createElement('style');
+    style.textContent = `
+        .no-messages {
+            text-align: center;
+            padding: 3rem;
+            color: #b0a8a8;
+        }
+        
+        .no-messages i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: #8B4513;
+        }
+        
+        .message-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1rem;
+            padding-top: 0.5rem;
+            border-top: 1px solid rgba(139, 0, 0, 0.1);
+            font-size: 0.8rem;
+            color: #8a7f7f;
+        }
+        
+        .message-id {
+            font-family: monospace;
+        }
+        
+        .private-icon {
+            margin-left: 0.5rem;
+            color: #D2691E;
+            font-size: 0.8rem;
+        }
+        
+        .pending-badge {
+            background: rgba(255, 193, 7, 0.2);
+            color: #ffc107;
+            padding: 0.2rem 0.5rem;
+            border-radius: 3px;
+            font-size: 0.75rem;
+        }
+        
+        .private-option {
+            margin-bottom: 1rem;
+            color: #b0a8a8;
+        }
+        
+        .private-option label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+        }
+        
+        .private-option input[type="checkbox"] {
+            margin-right: 0.5rem;
+        }
+        
+        .error-message {
+            text-align: center;
+            padding: 2rem;
+            background: rgba(139, 0, 0, 0.1);
+            border: 1px solid rgba(139, 0, 0, 0.3);
+            border-radius: 6px;
+        }
+        
+        .error-message i {
+            font-size: 2rem;
+            color: rgba(139, 0, 0, 0.5);
+            margin-bottom: 1rem;
+        }
+        
+        .retry-btn {
+            background: rgba(139, 0, 0, 0.7);
+            border: none;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 1rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+    `;
+    document.head.appendChild(style);
+});
