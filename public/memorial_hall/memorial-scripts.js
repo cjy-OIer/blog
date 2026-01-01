@@ -107,50 +107,50 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     // 留言表单提交
-    memorialForm.addEventListener('submit', function(e) {
-        e.preventDefault();
+    // memorialForm.addEventListener('submit', function(e) {
+    //     e.preventDefault();
         
-        const name = document.getElementById('name').value;
-        const message = document.getElementById('message').value;
+    //     const name = document.getElementById('name').value;
+    //     const message = document.getElementById('message').value;
         
-        if (!name.trim() || !message.trim()) {
-            showMessage('请填写完整信息', 'error');
-            return;
-        }
+    //     if (!name.trim() || !message.trim()) {
+    //         showMessage('请填写完整信息', 'error');
+    //         return;
+    //     }
         
-        // 创建新的留言卡片
-        const messagesContainer = document.querySelector('.messages-container');
-        const newMessage = document.createElement('div');
-        newMessage.className = 'message-card';
-        newMessage.innerHTML = `
-            <div class="message-header">
-                <i class="fas fa-user-circle"></i>
-                <div>
-                    <h4>${escapeHtml(name)}</h4>
-                    <span class="message-date">${new Date().toLocaleDateString('zh-CN')}</span>
-                </div>
-            </div>
-            <p class="message-content">${escapeHtml(message)}</p>
-        `;
+    //     // 创建新的留言卡片
+    //     const messagesContainer = document.querySelector('.messages-container');
+    //     const newMessage = document.createElement('div');
+    //     newMessage.className = 'message-card';
+    //     newMessage.innerHTML = `
+    //         <div class="message-header">
+    //             <i class="fas fa-user-circle"></i>
+    //             <div>
+    //                 <h4>${escapeHtml(name)}</h4>
+    //                 <span class="message-date">${new Date().toLocaleDateString('zh-CN')}</span>
+    //             </div>
+    //         </div>
+    //         <p class="message-content">${escapeHtml(message)}</p>
+    //     `;
         
-        // 添加到顶部
-        messagesContainer.insertBefore(newMessage, messagesContainer.firstChild);
+    //     // 添加到顶部
+    //     messagesContainer.insertBefore(newMessage, messagesContainer.firstChild);
         
-        // 显示成功消息
-        showMessage('留言已敬献，感谢您的思念', 'success');
+    //     // 显示成功消息
+    //     showMessage('留言已敬献，感谢您的思念', 'success');
         
-        // 清空表单
-        memorialForm.reset();
+    //     // 清空表单
+    //     memorialForm.reset();
         
-        // 添加动画效果
-        newMessage.style.opacity = '0';
-        newMessage.style.transform = 'translateY(-20px)';
+    //     // 添加动画效果
+    //     newMessage.style.opacity = '0';
+    //     newMessage.style.transform = 'translateY(-20px)';
         
-        setTimeout(() => {
-            newMessage.style.transition = 'all 0.5s ease';
-            newMessage.style.opacity = '1';
-            newMessage.style.transform = 'translateY(0)';
-        }, 10);
+    //     setTimeout(() => {
+    //         newMessage.style.transition = 'all 0.5s ease';
+    //         newMessage.style.opacity = '1';
+    //         newMessage.style.transform = 'translateY(0)';
+    //     }, 10);
     });
     
     // 创建花瓣飘落效果
