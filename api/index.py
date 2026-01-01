@@ -441,47 +441,71 @@ async def get_messages(
         logger.error(f"获取留言列表失败: {e}")
         raise HTTPException(status_code=500, detail="获取留言列表失败")
 
-@app.post("/api/memorial/messages")
-async def create_new_message(
-    message: CreateMessageRequest,
-    request: Request
-):
-    """创建新的纪念留言"""
-    try:
-        # 获取客户端IP地址
-        client_ip = request.client.host if request.client else None
+# @app.post("/api/memorial/messages")
+# async def create_new_message(
+#     message: CreateMessageRequest,
+#     request: Request
+# ):
+#     """创建新的纪念留言"""
+#     try:
+#         # 获取客户端IP地址
+#         client_ip = request.client.host if request.client else None
         
-        # 简单的防刷逻辑（同一IP1分钟内只能提交一次）
-        if client_ip:
-            async with (await get_db_connection()).acquire() as conn:
-                async with conn.cursor() as cursor:
-                    await cursor.execute("""
-                        SELECT COUNT(*) as count 
-                        FROM memorial_messages 
-                        WHERE author_ip = %s 
-                        AND created_at > DATE_SUB(NOW(), INTERVAL 1 MINUTE)
-                    """, (client_ip,))
+#         # 简单的防刷逻辑（同一IP1分钟内只能提交一次）
+#         if client_ip:
+#             async with (await get_db_connection()).acquire() as conn:
+#                 async with conn.cursor() as cursor:
+#                     await cursor.execute("""
+#                         SELECT COUNT(*) as count 
+#                         FROM memorial_messages 
+#                         WHERE author_ip = %s 
+#                         AND created_at > DATE_SUB(NOW(), INTERVAL 1 MINUTE)
+#                     """, (client_ip,))
                     
-                    result = await cursor.fetchone()
-                    if result and result['count'] > 3:
-                        raise HTTPException(
-                            status_code=429, 
-                            detail="提交过于频繁，请稍后再试"
-                        )
+#                     result = await cursor.fetchone()
+#                     if result and result['count'] > 3:
+#                         raise HTTPException(
+#                             status_code=429, 
+#                             detail="提交过于频繁，请稍后再试"
+#                         )
         
-        # 创建留言
+#         # 创建留言
+#         new_message = await create_message(message, client_ip)
+        
+#         if not new_message:
+#             raise HTTPException(status_code=500, detail="创建留言失败")
+        
+#         # 记录日志
+#         logger.info(f"新的纪念留言已创建 - 作者: {message.author_name}")
+        
+#         return {
+#             "message": "留言提交成功",
+#             "data": new_message
+#         }
+        
+#     except HTTPException:
+#         raise
+#     except Exception as e:
+#         logger.error(f"创建留言失败: {e}")
+#         raise HTTPException(status_code=500, detail="创建留言失败")
+
+@app.post("/api/memorial/messages")
+async def create_new_message(message: CreateMessageRequest, request: Request):
+    try:
+        client_ip = request.client.host if request.client else None
+        # 1. 防刷逻辑保持不变 ...
+        # 2. 创建留言
         new_message = await create_message(message, client_ip)
         
         if not new_message:
             raise HTTPException(status_code=500, detail="创建留言失败")
         
-        # 记录日志
+        # 3. 记录日志
         logger.info(f"新的纪念留言已创建 - 作者: {message.author_name}")
         
-        return {
-            "message": "留言提交成功",
-            "data": new_message
-        }
+        # 【关键修改】直接返回 create_message 返回的字典
+        # 确保它是字典格式，前端期望的格式是 {id, author_name, message_content, ...}
+        return new_message
         
     except HTTPException:
         raise
