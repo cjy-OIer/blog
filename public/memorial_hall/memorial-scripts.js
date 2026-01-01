@@ -106,7 +106,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
     
-    // 留言表单提交
+    //留言表单提交
     // memorialForm.addEventListener('submit', function(e) {
     //     e.preventDefault();
         
@@ -151,7 +151,7 @@ document.addEventListener('DOMContentLoaded', function() {
     //         newMessage.style.opacity = '1';
     //         newMessage.style.transform = 'translateY(0)';
     //     }, 10);
-    });
+    // });
     
     // 创建花瓣飘落效果
     function createPetals() {
