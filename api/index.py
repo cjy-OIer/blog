@@ -232,40 +232,71 @@ async def fetch_all_messages(include_private: bool = False):
             
             return messages
 
+# async def create_message(message_data: CreateMessageRequest, client_ip: Optional[str] = None):
+#     """创建新的纪念留言"""
+#     async with (await get_db_connection()).acquire() as conn:
+#         async with conn.cursor() as cursor:
+#             query = """
+#                 INSERT INTO memorial_messages 
+#                 (author_name, message_content, author_ip)
+#                 VALUES (%s, %s, %s)
+#             """
+            
+#             values = (
+#                 message_data.author_name,
+#                 message_data.message_content,
+#                 client_ip,
+#                 # message_data.is_private
+#             )
+            
+#             await cursor.execute(query, values)
+#             await conn.commit()
+            
+#             # 获取刚插入的留言ID
+#             message_id = cursor.lastrowid
+            
+#             # # 返回完整的留言信息
+#             # await cursor.execute("""
+#             #     SELECT id, author_name, message_content, 
+#             #            created_at, status
+#             #     FROM memorial_messages
+#             #     WHERE id = %s
+#             # """, (message_id,))
+            
+#             # result = await cursor.fetchone()
+#             # return dict(result) if result else None
+#         # 2. 【关键】使用 DictCursor 重新获取完整的留言信息
+#         async with conn.cursor(aiomysql.DictCursor) as dict_cursor:
+#             await dict_cursor.execute("""
+#                 SELECT id, author_name, message_content, 
+#                        created_at, status
+#                 FROM memorial_messages
+#                 WHERE id = %s
+#             """, (message_id,))
+            
+#             result = await dict_cursor.fetchone()
+#             # 现在 result 是一个字典，可以用 result['id'] 访问
+#             return result if result else None
+
 async def create_message(message_data: CreateMessageRequest, client_ip: Optional[str] = None):
     """创建新的纪念留言"""
     async with (await get_db_connection()).acquire() as conn:
-        async with conn.cursor() as cursor:
+        async with conn.cursor() as cursor:  # 第一个游标用于插入
             query = """
                 INSERT INTO memorial_messages 
                 (author_name, message_content, author_ip)
                 VALUES (%s, %s, %s)
             """
-            
             values = (
                 message_data.author_name,
                 message_data.message_content,
                 client_ip,
-                # message_data.is_private
             )
-            
             await cursor.execute(query, values)
             await conn.commit()
-            
-            # 获取刚插入的留言ID
             message_id = cursor.lastrowid
-            
-            # # 返回完整的留言信息
-            # await cursor.execute("""
-            #     SELECT id, author_name, message_content, 
-            #            created_at, status
-            #     FROM memorial_messages
-            #     WHERE id = %s
-            # """, (message_id,))
-            
-            # result = await cursor.fetchone()
-            # return dict(result) if result else None
-        # 2. 【关键】使用 DictCursor 重新获取完整的留言信息
+
+        # 【关键】创建第二个专门用于查询的字典游标
         async with conn.cursor(aiomysql.DictCursor) as dict_cursor:
             await dict_cursor.execute("""
                 SELECT id, author_name, message_content, 
@@ -273,10 +304,8 @@ async def create_message(message_data: CreateMessageRequest, client_ip: Optional
                 FROM memorial_messages
                 WHERE id = %s
             """, (message_id,))
-            
-            result = await dict_cursor.fetchone()
-            # 现在 result 是一个字典，可以用 result['id'] 访问
-            return result if result else None
+            result = await dict_cursor.fetchone()  # 这里返回的是字典
+            return result  # 直接返回这个字典
 
 async def get_message_stats():
     """获取留言统计信息"""
